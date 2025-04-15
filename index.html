@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phê duyệt nội dung - TOCNOIVN</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0 16px 60px;
+    }
+    header {
+      text-align: center;
+      padding: 24px 0 12px;
+    }
+    header img {
+      height: 48px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1e1e1e;
+      margin: 0;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      max-width: 800px;
+      margin: 20px auto 32px;
+    }
+    .controls input,
+    .controls select,
+    .controls button {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #d0d0d0;
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+    .controls input:focus,
+    .controls select:focus {
+      outline: none;
+      border-color: #007aff;
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+    }
+    .submit-top {
+      background-color: #007aff;
+      color: white;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .submit-top:hover {
+      background-color: #005fce;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin: 20px auto;
+      max-width: 800px;
+      padding: 20px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .card.dimmed {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .card img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+    .page-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .textarea-edit {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      background: #fcfcfc;
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      align-items: center;
+    }
+    .btn {
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .rewrite { background-color: #fcd34d; color: #333; }
+    .rewrite:hover { background-color: #fbbf24; }
+    .reject  { background-color: #ef4444; color: white; }
+    .reject:hover { background-color: #dc2626; }
+    .status-message {
+      font-size: 14px;
+      color: #22c55e;
+      margin-right: auto;
+      font-style: italic;
+    }
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #6b7280;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .scroll-top:hover {
+      background: #4b5563;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://tocnoi.vn/wp-content/uploads/2023/09/1-e1695052909825.png" alt="TOCNOIVN logo">
+    <h1>📋 Phê duyệt nội dung bài viết</h1>
+  </header>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="🔍 Tìm kiếm fanpage...">
+    <select id="platformFilter">
+      <option value="">Tất cả nền tảng</option>
+      <option value="Facebook">Facebook</option>
+      <option value="Instagram">Instagram</option>
+      <option value="Tiktok">Tiktok</option>
+    </select>
+    <button class="submit-top" onclick="submitToN8n()">✅ Gửi duyệt</button>
+  </div>
+
+  <div id="cards"></div>
+  <button class="scroll-top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" title="Lên đầu trang">↑</button>
+
+  <script>
+    const resumeUrl = new URLSearchParams(window.location.search).get("resumeUrl") || "";
+    const cardsContainer = document.getElementById('cards');
+    const sampleContent = `TOCNOIVN luôn lắng nghe khách hàng để hoàn thiện sản phẩm và dịch vụ.`;
+
+    for (let i = 1; i <= 5; i++) {
+      const platform = ["Facebook", "Instagram", "Tiktok"][i % 3];
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.setAttribute('data-platform', platform);
+      card.setAttribute('data-page', `${platform} - Fanpage ${i}`);
+      card.innerHTML = `
+        <div class="page-name">${platform} - Fanpage ${i}</div>
+        <img src="https://placehold.co/800x400?text=Image+${i}" alt="Ảnh ${i}">
+        <textarea class="textarea-edit">${sampleContent}</textarea>
+        <div class="actions">
+          <span class="status-message"></span>
+          <button class="btn rewrite">🔁 Viết lại</button>
+          <button class="btn reject">❌ Từ chối</button>
+        </div>
+      `;
+
+      const rewriteBtn = card.querySelector('.rewrite');
+      const rejectBtn = card.querySelector('.reject');
+      const statusText = card.querySelector('.status-message');
+
+      rewriteBtn.onclick = () => {
+        rewriteBtn.disabled = true;
+        rewriteBtn.innerText = '⏳ Đang viết lại';
+        statusText.innerText = '';
+        setTimeout(() => {
+          rewriteBtn.disabled = false;
+          rewriteBtn.innerText = '🔁 Viết lại';
+          statusText.innerText = '✅ Viết lại thành công';
+        }, 1500);
+      };
+
+      rejectBtn.onclick = () => {
+        card.classList.toggle('dimmed');
+        rejectBtn.innerText = card.classList.contains('dimmed') ? '↩ Khôi phục' : '❌ Từ chối';
+      };
+
+      cardsContainer.appendChild(card);
+    }
+
+    function submitToN8n() {
+      const allCards = document.querySelectorAll('.card');
+      const data = [];
+      allCards.forEach(card => {
+        const content = card.querySelector('textarea').value;
+        const page = card.getAttribute('data-page');
+        const status = card.classList.contains('dimmed') ? 'rejected' : 'approved';
+        data.push({ page, content, status });
+      });
+
+      if (!resumeUrl) return alert("❗ Thiếu resumeUrl trong URL");
+
+      fetch(resumeUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pages: data })
+      })
+      .then(res => res.ok ? alert('✅ Gửi dữ liệu thành công!') : alert('❌ Lỗi gửi dữ liệu'))
+      .catch(err => alert('❌ Kết nối thất bại: ' + err));
+    }
+  </script>
+</body>
+</html>
